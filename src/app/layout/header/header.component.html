@@ -1,0 +1,7 @@
+<header>
+  <!-- <mat-icon>menu</mat-icon> -->
+  <span class="heading">My Applicaiton</span>
+  <div class="web-pages">
+    <span *ngFor="let item of menuItems; let i = index" [routerLink]="item.route" [ngClass]='{ "selected": i === this.selectedIndex }' matRipple>{{ item.name }}</span>
+  </div>
+</header>

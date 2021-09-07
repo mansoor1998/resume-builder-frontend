@@ -1,0 +1,14 @@
+<div class="template-item">
+    <div class="image">
+        {{ item?.imagePath }}
+        <!-- button -->
+        <span>
+           <button (click)="itemClick($event)" >Select Template</button>
+       </span>
+       
+    </div>
+    <div class="description">
+        <h3 style="margin: 0px; font-weight: bold;">{{ item?.fileName }}</h3>
+        <p>{{ item?.description }}</p>
+    </div>             
+</div>

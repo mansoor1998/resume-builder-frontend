@@ -1,0 +1,43 @@
+.template-item {
+    padding: 5px;
+    /* flex-basis: calc( 33.3333% - 10px ); */
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.template-item .image {
+    background-color: #ccc;
+    min-height: 400px;
+    position: relative;
+    border-radius: 5px;
+}
+
+.template-item .image span button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00ffff;
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+.template-item .image span button:hover {
+    background-color: #61ecec;
+}
+
+.template-item .image span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, calc( -50% + 20px ));
+    opacity: 0;
+    visibility: hidden;
+    transition: all 200ms ease-in;
+}
+
+
+.template-item:hover > .image span {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%);
+}

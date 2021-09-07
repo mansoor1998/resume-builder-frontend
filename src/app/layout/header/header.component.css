@@ -1,0 +1,42 @@
+header {
+    padding: 15px 15px;
+    background-color: #ddd;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+header .heading {
+    font-size: 1.5em;
+    padding: 0px 5px;
+    align-self: center;
+}
+
+
+header .web-pages span {
+    margin: 0px 5px;
+    cursor: pointer;
+    padding: 5px;
+
+    display: inline-block;
+    /* overflow: hidden !important;
+    position: relative;
+    z-index: 1; */
+
+    border: 1px solid #fff;
+    border-radius: 5px;
+    /* for every browser */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+
+}
+
+
+header .web-pages .selected {
+    border: 1px solid rgb(66, 63, 63);
+}

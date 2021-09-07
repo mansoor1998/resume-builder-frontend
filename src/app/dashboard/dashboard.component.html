@@ -1,0 +1,9 @@
+<!-- application header -->
+
+
+<app-header></app-header>
+
+<!--  main body of the applicaiton -->
+<section [@fadeInOut]="prepareRoute(outlet)" style="margin-top: 10px;">
+  <router-outlet #outlet="outlet"></router-outlet>
+</section>
