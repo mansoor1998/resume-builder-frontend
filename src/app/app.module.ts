@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -19,6 +19,29 @@ import { MatInputModule } from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatChipsModule} from '@angular/material/chips';
+import { PlatformLocation } from '@angular/common';
+import {HttpClient } from '@angular/common/http';
+import { AppConst } from 'src/shared/app.const';
+import { LoginComponent } from './login/login.component';
+import { UserService } from 'src/shared/services/user.service';
+
+
+function appInitializerFactory(injector: Injector, platformLocation: PlatformLocation) {
+  return () => {
+    return new Promise((res, rej) => {
+      injector.get(HttpClient).get('./assets/appconfig.json').toPromise()
+      //@ts-ignore
+        .then((data: { remoteServiceBaseUrl: string, appBaseUrl: string }) => {
+          AppConst.remoteServiceBaseUrl = data.remoteServiceBaseUrl;
+          AppConst.appBaseUrl = data.appBaseUrl;
+
+          res(true);
+      }).catch(e => {
+          rej(e);
+      });
+    })
+  }
+}
 
 
 @NgModule({
@@ -30,7 +53,8 @@ import {MatChipsModule} from '@angular/material/chips';
     CreateTemplateComponent,
     PreviewComponent,
     TemplateItemComponent,
-    DashboardComponent
+    DashboardComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +71,14 @@ import {MatChipsModule} from '@angular/material/chips';
     MatChipsModule
     // MatToolbarModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [Injector, PlatformLocation],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

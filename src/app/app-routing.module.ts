@@ -4,8 +4,10 @@ import { AppComponent } from './app.component';
 import { CreateTemplateComponent } from './create-template/create-template.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 import { PreviewComponent } from './preview/preview.component';
 import { TemplateComponent } from './template/template.component';
+import { AuthRouteGaurd } from 'src/shared/auth-route-gaurd';
 
 const routes: Routes = [
   // {
@@ -32,12 +34,19 @@ const routes: Routes = [
         data: { animation: 'PreviewComponent' }
       }
     ],
-    component: DashboardComponent
+    component: DashboardComponent, 
+    canActivate: [AuthRouteGaurd]
   },
   {
     path: "template/create",
     component: CreateTemplateComponent,
-    data: { animation: 'CreateTemplateComponent' }
+    data: { animation: 'CreateTemplateComponent' },
+    canActivate: [AuthRouteGaurd]
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [AuthRouteGaurd]
   }
 ];
 
