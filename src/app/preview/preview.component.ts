@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ResumeService } from 'src/shared/services/resume.service';
 
 @Component({
   selector: 'app-preview',
@@ -16,20 +17,12 @@ export class PreviewComponent implements OnInit {
     description: string
   }[] = [];
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private resumeService: ResumeService) { }
 
   ngOnInit(): void {
 
-    const headers = new HttpHeaders({
-      'auth-token': 'bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4ZDhiYzRjLTQ3MjktNDJkNy1iZWU2LTJjNjA5YWQ0MTU3ZiIsImVtYWlsIjoiZmExNmJzY3MwMDE1QG1hanUuZWR1LnBrIiwiaWF0IjoxNjI5NzAzMzM5LCJleHAiOjE2Mjk3NDY1Mzl9.VYGJy-9YBvK92mnbj9cPZg474C4CR9Hw9syFTVbkzjw'
-    });
-
-
-    this.http.get<any>('http://localhost:3000' + '/api/v1/resume/get-all-userresumes', {
-      headers
-    })
-    .subscribe(
-      (result) => {
+    
+    this.resumeService.getAllUserResume().subscribe((result: []) => {
         this.templates = result.map((x: any) => {
           x.description = 'this is one of the description';
           return x;
@@ -40,8 +33,7 @@ export class PreviewComponent implements OnInit {
       },
       (err) => {
         console.error(err);
-      }
-    );
+      });
   }
 
 

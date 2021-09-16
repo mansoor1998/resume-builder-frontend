@@ -1,56 +1,124 @@
 <section>
-    {{resumeForm.value | json}}
+    <!-- {{resumeForm.value | json}} -->
     <div class="form">
         <form [formGroup]="resumeForm" (ngSubmit)="formSubmit($event)">
 
             <div>
                 <div style="display: flex; justify-content: flex-start; flex-wrap: wrap;">
 
-                    <div style="text-align: center;flex-basis: calc(50% - 5px); margin-bottom: 20px;">
-                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
-                            <mat-label>Name</mat-label>
-                            <input type="text" value="Untitled" formControlName="titleName" matInput>
-                        </mat-form-field>
-                    </div>
+                    <ng-container *ngIf="resumeForm.get('titleName')">
+                        <div style="text-align: center;flex-basis: calc(50% - 5px); margin-bottom: 20px;">
+                            <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                <mat-label>Name</mat-label>
+                                <input type="text" value="Untitled" formControlName="titleName" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="resumeForm.get('titleProfession')">
+                        <div style="text-align: center;flex-basis: calc(50% - 5px); margin-bottom: 20px;">
+                            <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                <mat-label>Profession</mat-label>
+                                <input type="text" value="Untitled" formControlName="titleProfession" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
     
-                    <div style="text-align: center; flex-basis: calc(50% - 5px);margin-bottom: 20px;">
-                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
-                            <mat-label>Email</mat-label>
-                            <input type="email" formControlName="email" matInput>
-                        </mat-form-field>
-                    </div>
-        
-                    <div style="text-align: center;flex-basis: calc(50% - 5px);margin-bottom: 20px;">
-                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
-                            <mat-label>PhoneNumber</mat-label>
-                            <input type="text" formControlName="number" matInput>
-                        </mat-form-field>
-                    </div>
-        
-                    <div style="text-align: center;flex-basis: calc(50% - 5px);margin-bottom: 20px;">
-                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
-                            <mat-label>Location</mat-label>
-                            <input type="text" formControlName="residence" matInput>
-                        </mat-form-field>
-                    </div>
-        
-                    <div style="text-align: center;flex-basis: calc(50% - 5px);margin-bottom: 20px;">
-                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
-                            <mat-label>LinkedIn</mat-label>
-                            <input type="text" formControlName="linkedinUrl" matInput>
-                        </mat-form-field>
-                    </div>
+                    <ng-container *ngIf="resumeForm.get('email')">
+                        <div style="text-align: center; flex-basis: calc(50% - 5px);margin-bottom: 20px;">
+                            <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                <mat-label>Email</mat-label>
+                                <input type="email" formControlName="email" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="resumeForm.get('number')">
+                        <div style="text-align: center;flex-basis: calc(50% - 5px);margin-bottom: 20px;">
+                            <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                <mat-label>PhoneNumber</mat-label>
+                                <input type="text" formControlName="number" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="resumeForm.get('location')">
+                        <div style="text-align: center;flex-basis: calc(50% - 5px);margin-bottom: 20px;">
+                            <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                <mat-label>Location</mat-label>
+                                <input type="text" formControlName="location" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="resumeForm.get('linkedinUrl')">
+                        <div style="text-align: center;flex-basis: calc(50% - 5px);margin-bottom: 20px;">
+                            <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                <mat-label>LinkedIn</mat-label>
+                                <input type="text" formControlName="linkedinUrl" matInput>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
                 </div>
     
                 <div style="display: flex;">
     
-                    <div style="text-align:center; margin-bottom: 20px; flex-basis: calc(50% - 5px);">
-                        <mat-form-field appearance="fill" style="width: 400px;">
-                            <mat-label>Description</mat-label>
-                            <textarea  matInput formControlName="titleDescription" rows="5"></textarea>
-                        </mat-form-field>
-                    </div>
-                </div>    
+                    <ng-container *ngIf="resumeForm.get('titleDescription')">
+                        <div style="text-align:center; margin-bottom: 20px; flex-basis: calc(50% - 5px);">
+                            <mat-form-field appearance="fill" style="width: 400px;">
+                                <mat-label>Description</mat-label>
+                                <textarea  matInput formControlName="titleDescription" rows="5"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+
+                </div>
+
+
+                <div>
+                    <ng-container *ngIf="resumeForm.get('skills')">
+                        <div>
+                            <mat-form-field style="width: 100%;" class="example-chip-list" appearance="fill">
+                                <mat-label>SKILLS</mat-label>
+                                <mat-chip-list #skillsList >
+                                <mat-chip *ngFor="let skill of resumeForm.get('skills')?.value; let i = index;" [selectable]="true"
+                                        [removable]="true" (removed)="remove(resumeForm.get('skills'), i)">
+                                    {{skill.name}}
+                                    <mat-icon matChipRemove>cancel</mat-icon>
+                                </mat-chip>
+                                <input placeholder="New fruit..."
+                                        [matChipInputFor]="skillsList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="true"
+                                        (matChipInputTokenEnd)="add(getAsFormArray( resumeForm?.get('skills') ), $event)">
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div>
+                    <ng-container *ngIf="resumeForm.get('languages')">
+                        <div>
+                            <mat-form-field style="width: 100%;" class="example-chip-list" appearance="fill">
+                                <mat-label>Language</mat-label>
+                                <mat-chip-list #languagesList >
+                                <mat-chip *ngFor="let skill of resumeForm.get('languages')?.value; let i = index;" [selectable]="true"
+                                        [removable]="true" (removed)="remove(resumeForm.get('languages'), i)">
+                                    {{skill.name}}
+                                    <mat-icon matChipRemove>cancel</mat-icon>
+                                </mat-chip>
+                                <input placeholder="New fruit..."
+                                        [matChipInputFor]="languagesList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="true"
+                                        (matChipInputTokenEnd)="add(getAsFormArray( resumeForm?.get('languages') ), $event)">
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                </div>
             </div>
 
             <div style="margin-bottom: 10px;" formArrayName="columns">
@@ -60,39 +128,18 @@
                         <mat-expansion-panel hideToggle>
                           <mat-expansion-panel-header>
                             <mat-panel-title>
-                              Column-{{i}}
+                              Column {{i + 1}}
                             </mat-panel-title>
                           </mat-expansion-panel-header>
-                          <!-- <h3 style="font-weight: 800; cursor: pointer;">Untitled</h3> -->
                             <div *ngFor="let item of getAsFormArray(column).controls; let j = index" [formGroupName]="j" style="margin-bottom: 30px;">
-
-
-                                <ng-container *ngIf="item.get('chips')">
+                                
+                                <!-- <ng-container *ngIf="item.get('chips');">
                                     <h3 style="font-weight: 800; display: inline-block; margin: 0px 5px;">SKILLS</h3>
                                     <button (click)="removeSection(column, j)" mat-mini-fab color="warn" >
                                         <mat-icon>delete</mat-icon>
                                     </button>
-                                </ng-container>
-                                <ng-container *ngIf="item.get('section')">
-                                    <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
-                                        <mat-label>Title</mat-label>
-                                        <input formControlName="title" type="text" matInput>
-                                    </mat-form-field>
-            
-                                    <button (click)="addSecitonItem(item, $event)" mat-icon-button color="primary">
-                                        <mat-icon>add_circle_outline</mat-icon>
-                                    </button>
-                                    <button (click)="removeSection(column, j)" mat-mini-fab color="warn">
-                                        <mat-icon>delete</mat-icon>
-                                      </button>
-
-                                </ng-container>
-
-
-                                <ng-container *ngIf="item.get('chips');">
                                     <div>
                                         <mat-form-field style="width: 100%;" class="example-chip-list" appearance="fill">
-                                            <mat-label>Favorite Fruits</mat-label>
                                             <mat-chip-list #chipList >
                                             <mat-chip *ngFor="let chip of item.get('chips')?.value; let x = index;" [selectable]="true"
                                                     [removable]="true" (removed)="remove(item.get('chips'), x)">
@@ -108,111 +155,139 @@
                                         </mat-form-field>
 
                                     </div>
-                                </ng-container>
-                                <ng-container *ngIf="item.get('section')">
-                                    <mat-accordion formArrayName="section">
-                                        <div style="display: flex; margin: 5px 0" *ngFor="let section of getAsFormArray( getAsFormGroup(item, 'section') ).controls; let k = index" [formGroupName]="k">
-                                            <mat-expansion-panel style="flex: 1">
-                                                <mat-expansion-panel-header>
-                                                <mat-panel-title>
-                                                    This is the title
-                                                </mat-panel-title>
-                                                </mat-expansion-panel-header>
-                
-                                                <div>
-                                                    <div style="margin-bottom: 10px;">
-                                                        <mat-form-field>
-                                                            <mat-label>Title</mat-label>
-                                                            <input formControlName="title" type="text" matInput>
-                                                        </mat-form-field>
-                    
-                                                        <mat-form-field>
-                                                            <mat-label>SubTitle</mat-label>
-                                                            <input formControlName="subtitle" type="text" matInput>
-                                                        </mat-form-field>
-                    
-                                                        <mat-form-field>
-                                                            <mat-label>Location</mat-label>
-                                                            <input formControlName="location" type="text" matInput>
-                                                        </mat-form-field>    
-                                                    </div>
-                
-                                                    <div>
-                                                        <p style="margin: 0px; padding: 0px;">Start and End Date</p>
-                                                        <div formGroupName="date">
-                                                            <mat-form-field>
-                                                                <mat-label>From</mat-label>
-                                                                    <input formControlName="from" matInput>
-                                                            </mat-form-field>
-                                                            <mat-form-field>
-                                                                <mat-label>To</mat-label>
-                                                                    <input formControlName="to" matInput>
-                                                            </mat-form-field>
-                                                        </div>
-                
-                                                    </div>
-                
-                                                    <ng-container *ngIf="section.get('list')">
-    
-                                                        <div style="margin-top: 20px">
-                                                            <button (click)="addSectionList(section, $event)" mat-icon-button color="primary">
-                                                                <mat-icon>add_circle_outline</mat-icon>
-                                                            </button>
-                                                        </div>
-    
-                                                        <div formArrayName="list">
-                                                            <div style="display: flex; margin: 10px 0" *ngFor="let list of getAsFormArray( getAsFormGroup(section, 'list') ).controls; let l = index;" [formGroupName]="l">
-                                                                    <!-- <mat-form-field style="flex: 1"> -->
-                                                                        <!-- <mat-label>To</mat-label> -->
-                                                                        <input  style="flex: 1; margin: 0 5px" placeholder="heading" formControlName="heading" type="text">
-                                                                    <!-- </mat-form-field> -->
-                    
-                                                                    <!-- <mat-form-field style="flex: 2"> -->
-                                                                        <!-- <mat-label>To</mat-label> -->
-                                                                        <textarea  style="flex: 3; margin: 0 5px" placeholder="paragraph" formControlName="paragraph" type="text">
-                                                                        </textarea>
-                                                                    <!-- </mat-form-field> -->
+                                </ng-container> -->
 
-                                                                    <button *ngIf="getAsFormArray( getAsFormGroup(section, 'list') ).controls.length > 1" (click)="removeSectionList(getAsFormArray( getAsFormGroup(section, 'list') ), l)" mat-mini-fab color="warn" >
+                                <ng-container *ngIf="item.get('type')?.value === formType.CUSTOM_SECTION">
+                                    <ng-container *ngIf="item.get('section')">
+                                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                            <mat-label>Title</mat-label>
+                                            <input formControlName="title" type="text" matInput>
+                                        </mat-form-field>
+                                        <button (click)="addSecitonItem(item, $event)" mat-icon-button color="primary">
+                                            <mat-icon>add_circle_outline</mat-icon>
+                                        </button>
+                                        <button (click)="removeSection(column, j)" mat-mini-fab color="warn">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    
+                                        <mat-accordion formArrayName="section">
+                                            <div style="display: flex; margin: 5px 0" *ngFor="let section of getAsFormArray( getAsFormGroup(item, 'section') ).controls; let k = index" [formGroupName]="k">
+                                                <mat-expansion-panel style="flex: 1">
+                                                    <mat-expansion-panel-header>
+                                                        <mat-panel-title>
+                                                            {{ getAsFormGroup(section, 'title').value }}
+                                                        </mat-panel-title>
+                                                    </mat-expansion-panel-header>
+                    
+                                                    <div>
+                                                        <div style="margin-bottom: 10px;">
+                                                            <mat-form-field>
+                                                                <mat-label>Title</mat-label>
+                                                                <input formControlName="title" type="text" matInput>
+                                                            </mat-form-field>
+                        
+                                                            <mat-form-field>
+                                                                <mat-label>SubTitle</mat-label>
+                                                                <input formControlName="subtitle" type="text" matInput>
+                                                            </mat-form-field>
+                        
+                                                            <mat-form-field>
+                                                                <mat-label>Location</mat-label>
+                                                                <input formControlName="location" type="text" matInput>
+                                                            </mat-form-field>    
+                                                        </div>
+                    
+                                                        <div>
+                                                            <p style="margin: 0px; padding: 0px;">Start and End Date</p>
+                                                            <div formGroupName="date">
+                                                                <mat-form-field>
+                                                                    <mat-label>From</mat-label>
+                                                                        <input formControlName="from" matInput>
+                                                                </mat-form-field>
+                                                                <mat-form-field>
+                                                                    <mat-label>To</mat-label>
+                                                                        <input formControlName="to" matInput>
+                                                                </mat-form-field>
+                                                            </div>
+                    
+                                                        </div>
+                    
+                                                        <ng-container *ngIf="section.get('list')">
+        
+                                                            <div style="margin-top: 20px">
+                                                                <button (click)="addSectionList(section, $event)" mat-icon-button color="primary">
+                                                                    <mat-icon>add_circle_outline</mat-icon>
+                                                                </button>
+                                                            </div>
+        
+                                                            <div formArrayName="list">
+                                                                <div style="display: flex; margin: 10px 0;" *ngFor="let list of getAsFormArray( getAsFormGroup(section, 'list') ).controls; let l = index;" [formGroupName]="l">
+                                                                    <input  style="flex: 1; margin: 0 5px" placeholder="heading" formControlName="heading" type="text">
+                                                                    <textarea style="flex: 3; margin: 0 5px" placeholder="paragraph" formControlName="paragraph" type="text"></textarea>
+                                                                    <button *ngIf="getAsFormArray( getAsFormGroup(section, 'list') ).controls.length > 1" (click)="removeSectionList(getAsFormArray( getAsFormGroup(section, 'list') ), l)" mat-mini-fab color="warn">
                                                                         <mat-icon>delete</mat-icon>
                                                                     </button>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </ng-container>
-    
-                                                    <ng-container *ngIf="section.get('bulletList')">
-    
-                                                        <div style="margin-top: 20px">
-                                                            <button (click)="addSectionBulletList(section, $event)" mat-icon-button color="primary">
-                                                                <mat-icon>add_circle_outline</mat-icon>
-                                                            </button>
-                                                        </div>
-    
-                                                        <div formArrayName="bulletList">
-                                                            <div style="margin: 10px 0" *ngFor="let list of getAsFormArray( getAsFormGroup(section, 'bulletList') ).controls; let l = index;" [formGroupName]="l">
-                                                                <textarea  style="width: 100%; margin: 0 5px" placeholder="name" formControlName="name" type="text">
-                                                                </textarea>
+                                                        </ng-container>
+        
+                                                        <!-- <ng-container *ngIf="section.get('bulletList')">
+        
+                                                            <div style="margin-top: 20px">
+                                                                <button (click)="addSectionBulletList(section, $event)" mat-icon-button color="primary">
+                                                                    <mat-icon>add_circle_outline</mat-icon>
+                                                                </button>
                                                             </div>
-                                                        </div>
-                                                    </ng-container>
-    
-                
-                                                </div>
-                                            </mat-expansion-panel>
-                                            <button *ngIf="getAsFormArray( getAsFormGroup(item, 'section') ).length > 1" (click)="removeSectionItem(item, k)" style="margin: 0 5px;" mat-fab color="warn" >
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
-                                        </div>
-                                        
-                                    </mat-accordion>
-                                </ng-container>    
-                                <!-- <ng-container *ngIf="getAsFormGroup(item, 'type').value === formType.SKILLS;">
-                                </ng-container> -->
+        
+                                                            <div formArrayName="bulletList">
+                                                                <div style="margin: 10px 0" *ngFor="let list of getAsFormArray( getAsFormGroup(section, 'bulletList') ).controls; let l = index;" [formGroupName]="l">
+                                                                    <textarea  style="width: 100%; margin: 0 5px" placeholder="name" formControlName="name" type="text">
+                                                                    </textarea>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container> -->
+        
+                    
+                                                    </div>
+                                                </mat-expansion-panel>
+                                                <button *ngIf="getAsFormArray( getAsFormGroup(item, 'section') ).length > 1" (click)="removeSectionItem(item, k)" style="margin: 0 5px;" mat-fab color="warn" >
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </div>                                            
+                                        </mat-accordion>
+                                    </ng-container>
+                                </ng-container>
+
+                                <ng-container *ngIf="item.get('type')?.value === formType.CHIP_SECTION || item.get('type')?.value === formType.INTEREST_SECTION">
+                                    <h3 style="font-weight: 800; display: inline-block; margin: 0px 5px;">{{ getAsFormGroup(item, 'title').value }}</h3>
+                                    <button (click)="removeSection(column, j)" mat-mini-fab color="warn" >
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                    <div>
+                                        <mat-form-field style="width: 100%;" class="example-chip-list" appearance="fill">
+                                            <mat-chip-list #chipList >
+                                            <mat-chip *ngFor="let chip of item.get('chips')?.value; let x = index;" [selectable]="true"
+                                                    [removable]="true" (removed)="remove(item.get('chips'), x)">
+                                                {{chip.name}}
+                                                <mat-icon matChipRemove>cancel</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="New fruit..."
+                                                    [matChipInputFor]="chipList"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="true"
+                                                    (matChipInputTokenEnd)="add(getAsFormArray(getAsFormGroup(item, 'chips')), $event)">
+                                            </mat-chip-list>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-container>
                             </div>
                             <div style="margin: 10px; padding: 10px; border: 1px solid black; border-radius: 10px;">
-                                <button style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION , i)" mat-raised-button>Custom Section</button>
-                                <button style="margin: 0 5px;" (click)="addColumnItem($event, formType.SKILLS, i)" mat-raised-button>Skills</button>
-                                <button style="margin: 0 5px;" (click)="addColumnItem($event, formType.BULLET_LIST_SECTION, i)" mat-raised-button>Bullet list Section</button>
+                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION , i)" mat-raised-button>Custom Section</button>
+                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION, i, 'Education')" mat-raised-button>Eudcation</button>
+                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION, i, 'Experience')" mat-raised-button>Experience</button>
+                                <button *ngIf="isRuleAvailable(formType.CHIP_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CHIP_SECTION, i, 'Skills')" mat-raised-button>Skills</button>
+                                <button *ngIf="isRuleAvailable(formType.INTEREST_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.INTEREST_SECTION, i, 'Interest')" mat-raised-button>Interest</button>
+                                <!-- <button *ngIf="isRuleAvailable(formType.)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.BULLET_LIST_SECTION, i)" mat-raised-button>Bullet list Section</button> -->
                             </div>
                         </mat-expansion-panel>
                       </mat-accordion>
@@ -221,15 +296,25 @@
             <div style="display: flex; flex-direction: row; gap: 10px;">
                 <button mat-raised-button color="primary" name="generate-pdf">Generate Pdf</button>
                 <button mat-raised-button color="primary" name="save-progress">Save Progress</button>
-                <!-- <button mat-raised-button color="primary" name="save">Submit</button>     -->
             </div>
         </form>
     </div>
     <div id="pdf-view">
-        <div>
-            <div class="page-A4">
-                <iframe #pdfView style="width: 100%; height: 100%; border: none" ></iframe>
-            </div>    
+        <div style="display: flex; justify-content: right; margin: 0 10px 0 0;">
+            <mat-icon style="height: 1em; width: 1em; font-size: 3em; cursor: pointer;">cancel</mat-icon>
+        </div>
+        <!-- <div style="width: 100%; position: relative; height: auto;">
+            <div style="height: auto;" class="spinner-body">
+                <mat-icon class="spinner">rotate_right</mat-icon>
+                <span style="font-size: 1.5em; position: relative; top: -2px;">Loading</span> 
+            </div>
+        </div> -->
+        <div class="pdf">
+            <div>
+                <div class="page-A4">
+                    <iframe #pdfView style="width: 100%; height: 100%; border: none" ></iframe>
+                </div>    
+            </div>
         </div>
     </div>
 </section>

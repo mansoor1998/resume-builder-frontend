@@ -1,19 +1,22 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInput, MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, Params } from '@angular/router';
 
 
 const FORM_TYPES = {
-  CUSTOM_SECTION: 'CUSTOM_SECTION',
-  SKILLS: 'SKILLS',
-  BULLET_LIST_SECTION: 'BULLET_LIST_SECTION' 
+  CUSTOM_SECTION: 'CustomSection',
+  CHIP_SECTION: 'ChipSection',
+  BULLET_LIST_SECTION: 'BULLET_LIST_SECTION',
+  INTEREST_SECTION: 'InterestSection'
 };
 
 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { debounceTime } from 'rxjs/operators';
+import { AppSession } from 'src/shared/app.session';
+import { ResumeService } from 'src/shared/services/resume.service';
 
 export interface Fruit {
   name: string;
@@ -33,79 +36,69 @@ export class CreateTemplateComponent implements OnInit {
   private resumeId: string | undefined;
   private userResumeId: string | undefined;
 
+  public rules: any;
+
   public formType = FORM_TYPES;
+
+  public fixedRules: {} = {};
+
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
 
   @ViewChild('pdfView') public pdfView: ElementRef | undefined;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private activatedRoute: ActivatedRoute) {
-    this.resumeForm = this.fb.group({});
+  constructor(private fb: FormBuilder, private http: HttpClient, private activatedRoute: ActivatedRoute, private resumeService: ResumeService) {
+    this.resumeForm = this.fb.group({
+      columns: this.fb.array([])
+    });
   }
 
   ngOnInit(): void {
-    this.resumeForm = this.fb.group({
-      titleName: '',
-      email: '',
-      titleDescription: '',
-      residence: '',
-      linkedinUrl: '',
-      number: '',
-      columns: this.fb.array([ 
-        this.fb.array([]),
-        this.fb.array([])
-      ])
-    });
+    // setInterval(() => console.log(this.resumeForm.value), 5000);
 
     this.activatedRoute.queryParams.subscribe((params: Params) => {
-      if(params['resumeId'])
+      if(params['resumeId']){
         this.resumeId = params['resumeId'];
-      if(params['userResumeId']){
-        this.userResumeId = params['userResumeId'];
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          'auth-token': 'bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4ZDhiYzRjLTQ3MjktNDJkNy1iZWU2LTJjNjA5YWQ0MTU3ZiIsImVtYWlsIjoiZmExNmJzY3MwMDE1QG1hanUuZWR1LnBrIiwiaWF0IjoxNjI5NzAzMzM5LCJleHAiOjE2Mjk3NDY1Mzl9.VYGJy-9YBvK92mnbj9cPZg474C4CR9Hw9syFTVbkzjw'
-        });
 
+        this.resumeService.getById(this.resumeId as string).subscribe((data) => {
+           const { rules } = data;
+           this.rules = rules;
+
+           this.setFormBody(rules);  
+        });
+        return;
+      }
+      else if(params['userResumeId']){
+        this.userResumeId = params['userResumeId'];
         // after routing subscription we make http request.
-        this.http.request('get', 'http://localhost:3000' + '/api/v1/resume/get-userresume-id', {
-          headers: headers,
-          params: new HttpParams( { fromString: `id=${this.userResumeId}` } ),
-        }).subscribe( (data) => {
+        this.resumeService.getUserResumeById(this.userResumeId as string).subscribe((data: any) => {
           //@ts-ignore
           const {BodyJson: body} = data;
-
-          body['columns'].splice(0, 2);
-          console.log(body);
-          this.resumeForm.setValue(body); 
-
+          const rules = data?.Resume?.rules;
+          this.resumeId = data?.resumeId;
+          this.rules = rules;
+          
+          this.setFormBody(rules, body);
+          // this.resumeForm.setValue(body)
         });
       }
     });
 
     this.resumeForm.valueChanges.pipe(debounceTime(2000)).subscribe(() => {
-      console.log('The debounce time kicks in place');
+
+      // console.log(this.resumeForm.value);
 
       if(this.resumeForm.invalid) {
         console.log('form is wrong');
         return;
       }
-  
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'auth-token': 'bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4ZDhiYzRjLTQ3MjktNDJkNy1iZWU2LTJjNjA5YWQ0MTU3ZiIsImVtYWlsIjoiZmExNmJzY3MwMDE1QG1hanUuZWR1LnBrIiwiaWF0IjoxNjI5NzAzMzM5LCJleHAiOjE2Mjk3NDY1Mzl9.VYGJy-9YBvK92mnbj9cPZg474C4CR9Hw9syFTVbkzjw'
-      });
-  
-  
       const body = this.resumeForm.value;
-    
-      // console.log(body);
 
-  
-      this.http.request('post', 'http://localhost:3000' + '/api/v1/resume/get-resume-layout', {
-        body: body,
-        headers: headers,
-        params: new HttpParams( { fromString: `id=${this.resumeId}` } ),
-        responseType: 'text'
-      }).subscribe((result) => {
+      // this.resumeService.saveResumeHtml(this.resumeId as string, body).subscribe((result: any) => {
+      //   this.userResumeId = result.id;
+      // });
+
+      this.resumeService.getResumeLayout(this.resumeId as string, body).subscribe((result) => {
           let doc =  this.pdfView?.nativeElement.contentDocument || this.pdfView?.nativeElement.contentWindow;
           doc.open();
           doc.write(result);
@@ -114,6 +107,81 @@ export class CreateTemplateComponent implements OnInit {
         console.error(err);
       });
     });
+  }
+
+  setFormBody(rule: any, body: any = null){
+
+    const {body: ruleBody, columns} = rule;
+
+    console.log(body);
+
+    for(let rule in ruleBody){
+      let control: FormControl | FormArray;
+      if(ruleBody[rule]?.type === 'string') {
+        control = new FormControl('', []);
+      } else if (ruleBody[rule]?.type === 'number') {
+        control = new FormControl(0, []);
+      } else if(Array.isArray(ruleBody[rule]?.type)) {
+        control = new FormArray([]);
+      }
+
+      if(control!){
+        if(body && body[rule]){
+          if(typeof body[rule] === 'string' || typeof body[rule] === 'number' || typeof body[rule] === 'boolean') control.setValue( body[rule] );
+          else if (rule === 'skills' || rule === 'languages'){
+            for(let item of body[rule]){
+              (control as FormArray).push(new FormGroup({
+                name: new FormControl(item.name)
+              }));
+            }
+          }
+        }
+        this.resumeForm.addControl( rule, control );
+      }
+    }
+
+    this.resumeForm.addControl('columns', new FormArray([]));
+    Array.from({length: columns}, () => null).forEach( () => (this.resumeForm.get('columns') as FormArray).push(new FormArray([])) );
+
+    if(body){
+      for(let i = 0; i < body['columns'].length; i++){
+        let column = body['columns'][i];
+        for(let item of column){
+          if(item.type === FORM_TYPES.CUSTOM_SECTION){
+            // const section = this.getCustomItem(FORM_TYPES.CUSTOM_SECTION);
+            // (section.get('title') as FormControl).setValue(item.title);
+            const section = this.setCustomItem(item);
+            
+            // const formArray = new FormArray([]);
+            // formArray.push( section );
+            ((this.resumeForm.get('columns') as FormArray).at(i) as FormArray).push(section); 
+            // const array = (this.resumeForm.get('columns') as FormArray)
+            // .at(i) as FormArray).push(section);
+          } else if (item.type === FORM_TYPES.INTEREST_SECTION){
+            const formArray = new FormArray([]);
+            for(let i = 0; i < item.chips.length; i++){
+              let chip = item.chips[i];
+              let group = new FormGroup({
+                name: new FormControl(chip.name)
+              });
+              formArray.push(group);
+              // group.setValue({ name: chip.name });
+              // console.log('form array', item.chips);
+            }
+            ((this.resumeForm.get('columns') as FormArray).at(i) as FormArray).push(new FormGroup({
+              type: new FormControl(FORM_TYPES.INTEREST_SECTION),
+              chips: formArray,
+              title: new FormControl(item.title)
+            })); 
+          }
+        }
+      }
+    }
+    
+
+    console.log(this.resumeForm.value);
+    // console.log(body && body['columns']);
+
   }
 
   addChip(chip: FormArray, event: MatChipInputEvent){
@@ -131,8 +199,25 @@ export class CreateTemplateComponent implements OnInit {
 
   getCustomItem(type: string = FORM_TYPES.CUSTOM_SECTION){
     return this.fb.group({
-      title: 'Untitled',
+      type: type,
+      title: '',
       section: this.fb.array([ this.getCustomSection(type) ])
+    });
+  }
+
+  setCustomItem(object: any){
+    const formArray = new FormArray([]);
+    for(let i = 0; i < object.section.length; i++){
+      const section = this.getCustomSection(FORM_TYPES.CUSTOM_SECTION);
+      const sectionItem = object.section[i];
+      section.setValue(sectionItem);
+      formArray.push(section)
+    }
+
+    return this.fb.group({
+      type: FORM_TYPES.CUSTOM_SECTION,
+      title: object?.title,
+      section: formArray
     });
   }
 
@@ -147,21 +232,43 @@ export class CreateTemplateComponent implements OnInit {
     });
   }
 
+  getChipItem(title: string, controlName: string){
+    let group = this.fb.group({
+      title: title
+    });
+
+    group.addControl(controlName, new FormArray([]));
+
+    return group;
+  }
+  
+  customFormControl(key: string | string[], value: string | string[]){
+    let group = this.fb.group({});
+    if(Array.isArray(key) && Array.isArray(value)){
+      for(let i = 0; i < key.length; i++){
+        group.addControl(key[i], new FormControl(value[i]));
+      }
+    }else if( typeof key === "string" ) {
+      group.addControl(key, new FormControl(value));
+    }
+    return group;
+  }
+
   getCustomSection(type: string = FORM_TYPES.CUSTOM_SECTION) : FormGroup{
     let group = this.fb.group({
-      title: 'Software Development',
-      subtitle: 'AKSIQ',
+      title: 'Untitled',
+      subtitle: '',
       date: this.fb.group({
         from: [''],
         to: ['']
       }),
-      location: 'Karachi, Pakistan',
+      location: '',
       smallText: this.fb.array([]),
-      // list: this.fb.array([this.getListItem()])
+      list: this.fb.array([this.getListItem()])
     });
 
     if(type === FORM_TYPES.BULLET_LIST_SECTION){
-      console.log('bullet list section is added');
+      // console.log('bullet list section is added');
       group.addControl('bulletList', this.fb.array([
         this.fb.group({
           name: ''
@@ -185,7 +292,7 @@ export class CreateTemplateComponent implements OnInit {
     });
   }
 
-  getAsFormArray(ab: AbstractControl){
+  getAsFormArray(ab: AbstractControl | undefined | null){
     return (ab as FormArray);
   }
 
@@ -204,14 +311,27 @@ export class CreateTemplateComponent implements OnInit {
     return column;
   }
 
+  isRuleAvailable(rule: string): boolean{
+    const layout = this.rules?.body?.layout;
+    return Object.keys(layout).includes(rule);   
+  }
 
-  addColumnItem(event: Event, type: string = FORM_TYPES.CUSTOM_SECTION, index:number = 0): void{
-    event.preventDefault();
+
+  addColumnItem(event: Event, type: string = FORM_TYPES.CUSTOM_SECTION, index:number = 0, title:string | null = null): void{
+    event?.preventDefault();
 
     const column = (this.resumeForm.get('columns') as FormArray).at(index) as FormArray;
 
-    if(type === FORM_TYPES.SKILLS){
-      column.push(this.getSkillsItem())
+    if(type === FORM_TYPES.CHIP_SECTION || type === FORM_TYPES.INTEREST_SECTION){
+      if(title){
+        let formGroup = this.getChipItem(title, "chips");
+        if(type === FORM_TYPES.CHIP_SECTION)
+          formGroup.addControl('type', new FormControl(FORM_TYPES.CHIP_SECTION));
+        else if (type === FORM_TYPES.INTEREST_SECTION)
+          formGroup.addControl('type', new FormControl(FORM_TYPES.INTEREST_SECTION));
+
+        column.push(formGroup)
+      }
       return;
     }
 
@@ -222,7 +342,12 @@ export class CreateTemplateComponent implements OnInit {
     }
 
     if(type === FORM_TYPES.CUSTOM_SECTION){
-      column.push(this.getCustomItem(FORM_TYPES.CUSTOM_SECTION));
+      let formGroup = this.getCustomItem(FORM_TYPES.CUSTOM_SECTION)
+      if(title) {
+        (formGroup.get('title') as FormControl).setValue(title);
+      }
+      column.push(formGroup);
+
       return;
     }
 
@@ -261,65 +386,35 @@ export class CreateTemplateComponent implements OnInit {
 
 
   formSubmit(event: Event) {
-
     const attribute = document.activeElement?.getAttribute("name");
 
     if(attribute === 'save-progress'){
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'auth-token': 'bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4ZDhiYzRjLTQ3MjktNDJkNy1iZWU2LTJjNjA5YWQ0MTU3ZiIsImVtYWlsIjoiZmExNmJzY3MwMDE1QG1hanUuZWR1LnBrIiwiaWF0IjoxNjI5NzAzMzM5LCJleHAiOjE2Mjk3NDY1Mzl9.VYGJy-9YBvK92mnbj9cPZg474C4CR9Hw9syFTVbkzjw'
-      });
-
       const body = this.resumeForm.value;
 
       if(this.userResumeId){
-        debugger;
-        this.http.request('put', 'http://localhost:3000' + '/api/v1/resume/update-resume-html', {
-          body: body,
-          headers: headers,
-          params: new HttpParams( { fromString: `id=${this.userResumeId}` } )
-        }).subscribe((result) => {
+        console.log(body);
+        this.resumeService.updateResumeHtml(this.userResumeId, body).subscribe(result => {
           console.log('the cv has been sucessfull updated');
-          console.log(result);
         });
 
         return;
       }
 
 
-      this.http.request('post', 'http://localhost:3000' + '/api/v1/resume/save-resume-html', {
-        body: body,
-        headers: headers,
-        params: new HttpParams( { fromString: `id=${this.resumeId}` } )
-      }).subscribe((result) => {
+      this.resumeService.saveResumeHtml(this.resumeId as string, body).subscribe((result) => {
         //@ts-ignore
-        // result.id is the userresumeId.
         this.userResumeId = result.id;
-        console.log(result);
       });
       return;
     }
 
     if(attribute === 'generate-pdf'){
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'auth-token': 'bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4ZDhiYzRjLTQ3MjktNDJkNy1iZWU2LTJjNjA5YWQ0MTU3ZiIsImVtYWlsIjoiZmExNmJzY3MwMDE1QG1hanUuZWR1LnBrIiwiaWF0IjoxNjI5NzAzMzM5LCJleHAiOjE2Mjk3NDY1Mzl9.VYGJy-9YBvK92mnbj9cPZg474C4CR9Hw9syFTVbkzjw'
-      });
-
       if(!this.userResumeId) return console.log('user resume id does not exist');
 
       const body = this.resumeForm.value;
 
-
-      this.http.request('post', 'http://localhost:3000' + '/api/v1/resume/save-resume-pdf', {
-        headers: headers,
-        params: new HttpParams( { fromString: `id=${this.userResumeId}` } )
-      }).subscribe((result) => {
-        this.http.request('get', 'http://localhost:3000' + '/api/v1/resume/get-pdf', {
-          headers: headers,
-          params: new HttpParams( { fromString: `id=${this.userResumeId}` } ),
-          responseType: 'blob'
-        }).subscribe(blobResult => {
+      this.resumeService.saveResumePdf(this.userResumeId).subscribe((result) => {
+        this.resumeService.getPdf(this.userResumeId as string).subscribe(blobResult => {
           const anchorTag = document.createElement('a');
           const filePath = URL.createObjectURL(blobResult)
           anchorTag.href = filePath;
@@ -330,9 +425,6 @@ export class CreateTemplateComponent implements OnInit {
       return;
     }
   }
-
-
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   add(chips: FormArray, event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
