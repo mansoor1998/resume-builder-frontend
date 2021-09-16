@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { PreviewComponent } from './preview/preview.component';
 import { TemplateComponent } from './template/template.component';
 import { AuthRouteGaurd } from 'src/shared/auth-route-gaurd';
+import { CreateTemplateNewComponent } from './create-template-new/create-template-new.component';
 
 const routes: Routes = [
   // {
@@ -41,6 +42,12 @@ const routes: Routes = [
     path: "template/create",
     component: CreateTemplateComponent,
     data: { animation: 'CreateTemplateComponent' },
+    canActivate: [AuthRouteGaurd]
+  },
+  {
+    path: "template/create/new",
+    component: CreateTemplateNewComponent,
+    data: { animation: 'CreateTemplateNewComponent' },
     canActivate: [AuthRouteGaurd]
   },
   {

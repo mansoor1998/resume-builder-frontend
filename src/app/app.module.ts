@@ -24,6 +24,7 @@ import {HttpClient } from '@angular/common/http';
 import { AppConst } from 'src/shared/app.const';
 import { LoginComponent } from './login/login.component';
 import { UserService } from 'src/shared/services/user.service';
+import { CreateTemplateNewComponent } from './create-template-new/create-template-new.component';
 
 
 function appInitializerFactory(injector: Injector, platformLocation: PlatformLocation) {
@@ -54,7 +55,8 @@ function appInitializerFactory(injector: Injector, platformLocation: PlatformLoc
     PreviewComponent,
     TemplateItemComponent,
     DashboardComponent,
-    LoginComponent
+    LoginComponent,
+    CreateTemplateNewComponent
   ],
   imports: [
     BrowserModule,
