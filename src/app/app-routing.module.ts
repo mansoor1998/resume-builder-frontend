@@ -20,7 +20,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'home',
+        path: '',
         component: HomeComponent,
         data: { animation: 'HomeComponent' }
       },
@@ -32,11 +32,12 @@ const routes: Routes = [
       {
         path: 'preview',
         component: PreviewComponent,
-        data: { animation: 'PreviewComponent' }
+        data: { animation: 'PreviewComponent' },
+        canActivate: [AuthRouteGaurd]
+
       }
     ],
-    component: DashboardComponent, 
-    canActivate: [AuthRouteGaurd]
+    component: DashboardComponent
   },
   {
     path: "template/create",

@@ -1,5 +1,7 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-template-item',
@@ -13,8 +15,11 @@ export class TemplateItemComponent implements OnInit {
     id: string,
     imagePath: string,
     fileName: string,
-    description: string
+    description: string,
+    htmlFile: string,
+    resumeImagePath: string
   } | undefined;
+
 
   @Output() public itemSelected : EventEmitter<any> = new EventEmitter();
 
@@ -22,7 +27,7 @@ export class TemplateItemComponent implements OnInit {
   // @Input() public fileName: string | undefined;
   // @Input() public description: string | undefined;
 
-  constructor() { }
+  constructor(private sanitizer:DomSanitizer) { }
 
   ngOnInit(): void {
     // console.log(this.item?.imagePath);
@@ -30,6 +35,12 @@ export class TemplateItemComponent implements OnInit {
 
   itemClick(event: any){
     this.itemSelected?.emit(this.item);
+  }
+
+  sanitize(url:string | undefined): string{
+    if(!url) return '';
+    //@ts-ignore
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
 }

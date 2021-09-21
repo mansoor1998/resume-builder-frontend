@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy } from '@angular/compiler/src/compiler_facade_interface';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { applySourceSpanToExpressionIfNeeded } from '@angular/compiler/src/output/output_ast';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import {AppSession} from '../../../shared/app.session';
 
 @Component({
   selector: 'app-header',
@@ -9,12 +11,19 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
+  @ViewChild('navbar') nav: ElementRef<HTMLElement> | undefined;
+
   public selectedIndex = 0;
+  public defaultRoute = '/home';
+
+  private currentScroll = 0;
+
+  sideBarEnabled = false;
 
   public menuItems = [
     {
       name: 'Home',
-      route: '/home'
+      route: '/'
     },
     {
       name: 'Template',
@@ -22,7 +31,8 @@ export class HeaderComponent implements OnInit {
     },
     {
       name: 'Preview',
-      route: '/preview'
+      route: '/preview',
+      isAuthorized: true
     }
   ]
 
@@ -37,7 +47,7 @@ export class HeaderComponent implements OnInit {
     //     this.currentRoute = event.url;          
     //     console.log(event);
     //   });
-
+    this.currentScroll = window.scrollY || window.document.documentElement.scrollTop || window.document.body.scrollTop || 0;
     this.selectedIndex = this.menuItems.findIndex(x => window.location.pathname == x.route);  
 
 
@@ -48,8 +58,43 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  // itemClicked(index: number){
-  //   this.selectedIndex = index;
-  // }
+  @HostListener("window:scroll", [])
+  onWindowScroll() {
+    const scrollY = window.scrollY || window.document.documentElement.scrollTop || window.document.body.scrollTop || 0;
 
+    if(scrollY >= 63 + 40){
+      if(scrollY > this.currentScroll){
+        this.nav?.nativeElement.classList.add('header-hide');
+      } 
+    }
+
+    if(scrollY <= this.currentScroll) {
+      this.nav?.nativeElement.classList.remove('header-hide');
+    }
+  
+    this.currentScroll = scrollY;
+
+  }
+
+  sidebarClick(item: any){
+    this.router.navigate([item.route]);
+    this.sideBarEnabled = !this.sideBarEnabled;
+  }
+
+  isAuthorized(item: any){
+    const user = AppSession.getUserDetails();
+    if(item?.isAuthorized)
+      return user?.id;
+    return true;
+  }
+
+  
+  public logout(){
+    AppSession.removeToken(AppSession.AUTH_TOKEN);
+    this.router.navigate(['/login']);
+  }
+
+  isLoggedIn(){
+    return AppSession.isLogedIn();
+  }
 }

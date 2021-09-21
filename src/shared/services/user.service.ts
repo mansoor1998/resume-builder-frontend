@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AppConst } from "../app.const";
+import { AppSession } from "../app.session";
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +21,14 @@ export class UserService {
         });
 
         return this.http.post(this.REMOTE_BASE_URL + '/api/v1/user/login', user, { headers });
+    }
+
+    public isAuthorized(): Observable<boolean> | any {
+        return this.http.get(this.REMOTE_BASE_URL + '/api/v1/user/isAuthorized', {
+            headers: new HttpHeaders({
+                'auth-token': `bearer ${AppSession.getToken(AppSession.AUTH_TOKEN)}`
+            })
+        });
     }
 }
 

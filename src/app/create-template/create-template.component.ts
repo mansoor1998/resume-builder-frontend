@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInput, MatChipInputEvent } from '@angular/material/chips';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 
 const FORM_TYPES = {
@@ -31,6 +31,12 @@ export interface Fruit {
 })
 export class CreateTemplateComponent implements OnInit {
 
+  public loading: boolean = true;
+
+  public progessLoading = false;
+  public pdfLoading = false;
+  public isProgressSaved = false;
+
 
   public resumeForm: FormGroup;
   private resumeId: string | undefined;
@@ -47,7 +53,8 @@ export class CreateTemplateComponent implements OnInit {
 
   @ViewChild('pdfView') public pdfView: ElementRef | undefined;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private activatedRoute: ActivatedRoute, private resumeService: ResumeService) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private activatedRoute: ActivatedRoute, 
+    private resumeService: ResumeService, private router: Router) {
     this.resumeForm = this.fb.group({
       columns: this.fb.array([])
     });
@@ -84,8 +91,11 @@ export class CreateTemplateComponent implements OnInit {
       }
     });
 
-    this.resumeForm.valueChanges.pipe(debounceTime(2000)).subscribe(() => {
+    this.resumeForm.valueChanges.subscribe(() =>{
+      this.loading = true;
+    });
 
+    this.resumeForm.valueChanges.pipe(debounceTime(2000)).subscribe(() => {
       // console.log(this.resumeForm.value);
 
       if(this.resumeForm.invalid) {
@@ -99,6 +109,7 @@ export class CreateTemplateComponent implements OnInit {
       // });
 
       this.resumeService.getResumeLayout(this.resumeId as string, body).subscribe((result) => {
+          this.loading = false;
           let doc =  this.pdfView?.nativeElement.contentDocument || this.pdfView?.nativeElement.contentWindow;
           doc.open();
           doc.write(result);
@@ -107,6 +118,10 @@ export class CreateTemplateComponent implements OnInit {
         console.error(err);
       });
     });
+  }
+
+  get _userResumeId() {
+    return this.userResumeId;
   }
 
   setFormBody(rule: any, body: any = null){
@@ -157,7 +172,7 @@ export class CreateTemplateComponent implements OnInit {
             ((this.resumeForm.get('columns') as FormArray).at(i) as FormArray).push(section); 
             // const array = (this.resumeForm.get('columns') as FormArray)
             // .at(i) as FormArray).push(section);
-          } else if (item.type === FORM_TYPES.INTEREST_SECTION){
+          } else if (item.type === FORM_TYPES.INTEREST_SECTION || item.type === FORM_TYPES.CHIP_SECTION){
             const formArray = new FormArray([]);
             for(let i = 0; i < item.chips.length; i++){
               let chip = item.chips[i];
@@ -169,7 +184,7 @@ export class CreateTemplateComponent implements OnInit {
               // console.log('form array', item.chips);
             }
             ((this.resumeForm.get('columns') as FormArray).at(i) as FormArray).push(new FormGroup({
-              type: new FormControl(FORM_TYPES.INTEREST_SECTION),
+              type: new FormControl(item.type),
               chips: formArray,
               title: new FormControl(item.title)
             })); 
@@ -189,6 +204,7 @@ export class CreateTemplateComponent implements OnInit {
 
     if (value) {
       chip.push( this.fb.group({name: value}) );
+      this.resumeForm.markAsDirty();
     }
 
     // Clear the input value
@@ -210,9 +226,16 @@ export class CreateTemplateComponent implements OnInit {
     for(let i = 0; i < object.section.length; i++){
       const section = this.getCustomSection(FORM_TYPES.CUSTOM_SECTION);
       const sectionItem = object.section[i];
+      let n = sectionItem.list.length - (section.get('list') as FormArray).length;
+      for (let i = 0; i < n; i++ ){
+        (section.get('list') as FormArray).push(this.getListItem());
+      }
+      
       section.setValue(sectionItem);
       formArray.push(section)
     }
+
+    console.log(formArray);
 
     return this.fb.group({
       type: FORM_TYPES.CUSTOM_SECTION,
@@ -259,8 +282,8 @@ export class CreateTemplateComponent implements OnInit {
       title: 'Untitled',
       subtitle: '',
       date: this.fb.group({
-        from: [''],
-        to: ['']
+        from: '',
+        to: ''
       }),
       location: '',
       smallText: this.fb.array([]),
@@ -331,6 +354,7 @@ export class CreateTemplateComponent implements OnInit {
           formGroup.addControl('type', new FormControl(FORM_TYPES.INTEREST_SECTION));
 
         column.push(formGroup)
+        this.resumeForm.markAsDirty();
       }
       return;
     }
@@ -347,7 +371,7 @@ export class CreateTemplateComponent implements OnInit {
         (formGroup.get('title') as FormControl).setValue(title);
       }
       column.push(formGroup);
-
+      this.resumeForm.markAsDirty();
       return;
     }
 
@@ -356,19 +380,22 @@ export class CreateTemplateComponent implements OnInit {
 
   addSecitonItem(item: any, event: Event, type: string = 'CUSTOM_SECTION'): void{
     event.preventDefault();
-    (item.get('section') as FormArray).push(this.getCustomSection());    
+    (item.get('section') as FormArray).push(this.getCustomSection());
+    this.resumeForm.markAsDirty();
   }
 
   addSectionList(section: any, event: Event): void {
     event.preventDefault();
-    (section.get('list') as FormArray).push(this.getListItem()); 
+    (section.get('list') as FormArray).push(this.getListItem());
+    this.resumeForm.markAsDirty();
   }
 
   addSectionBulletList(section: any, event: Event): void {
     event.preventDefault();
     (section.get('bulletList') as FormArray).push(this.fb.group({
       name: ''
-    })); 
+    }));
+    this.resumeForm.markAsDirty();
   }
 
   removeSectionList(list: AbstractControl, index: number){
@@ -385,35 +412,45 @@ export class CreateTemplateComponent implements OnInit {
   }
 
 
-  formSubmit(event: Event) {
+  formSubmit(event: Event) {    
     const attribute = document.activeElement?.getAttribute("name");
 
     if(attribute === 'save-progress'){
+      this.isProgressSaved = true;
+      this.progessLoading = true;
       const body = this.resumeForm.value;
 
+
       if(this.userResumeId){
-        console.log(body);
+        // console.log(body);
         this.resumeService.updateResumeHtml(this.userResumeId, body).subscribe(result => {
-          console.log('the cv has been sucessfull updated');
+          this.progessLoading = false;
+          this.resumeForm.markAsPristine();
+          console.log('resume has been updated');
         });
 
         return;
       }
 
 
-      this.resumeService.saveResumeHtml(this.resumeId as string, body).subscribe((result) => {
-        //@ts-ignore
+      this.resumeService.saveResumeHtml(this.resumeId as string, body).subscribe((result: any) => {
+        this.progessLoading = false;
+        this.resumeForm.markAsPristine();
+        console.log('resume has been created');
         this.userResumeId = result.id;
       });
       return;
     }
 
     if(attribute === 'generate-pdf'){
+      this.isProgressSaved = false;
+      this.pdfLoading = true;
       if(!this.userResumeId) return console.log('user resume id does not exist');
 
       const body = this.resumeForm.value;
 
       this.resumeService.saveResumePdf(this.userResumeId).subscribe((result) => {
+        this.pdfLoading = false;
         this.resumeService.getPdf(this.userResumeId as string).subscribe(blobResult => {
           const anchorTag = document.createElement('a');
           const filePath = URL.createObjectURL(blobResult)
@@ -426,6 +463,14 @@ export class CreateTemplateComponent implements OnInit {
     }
   }
 
+  isFormDirty(): boolean {
+    return this.resumeForm.dirty;
+  }
+
+  exit(){
+    this.router.navigate(['/template']);
+  }
+
   add(chips: FormArray, event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
@@ -435,6 +480,7 @@ export class CreateTemplateComponent implements OnInit {
           name: value
         })
       );
+      this.resumeForm.markAsDirty();
     }
 
     // Clear the input value

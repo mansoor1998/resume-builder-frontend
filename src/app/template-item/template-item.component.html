@@ -1,14 +1,27 @@
 <div class="template-item">
     <div class="image">
-        {{ item?.imagePath }}
+        <ng-container *ngIf="item?.resumeImagePath; else elseBlock">
+            <img [src]="sanitize(item?.resumeImagePath)" alt="">
+        </ng-container>
+        <ng-template #elseBlock>
+            <img [src]="'http://localhost:3000/images/'+item?.imagePath" alt="">
+        </ng-template>
+        <!-- {{ item?.imagePath }} -->
         <!-- button -->
         <span>
-           <button (click)="itemClick($event)" >Select Template</button>
+           <button style="font-family: inherit; font-size: 1.5em" (click)="itemClick($event)"> 
+               <i>Select Template</i>
+            </button>
        </span>
        
     </div>
     <div class="description">
-        <h3 style="margin: 0px; font-weight: bold;">{{ item?.fileName }}</h3>
-        <p>{{ item?.description }}</p>
+        <div style="margin-left: 10px;">
+            <h3 style="margin: 0px; font-weight: bold;">{{ item?.fileName }}</h3>
+            <p>{{ item?.description }}</p>
+        </div>
+        <div>
+            <ng-content></ng-content>
+        </div>
     </div>             
 </div>

@@ -14,9 +14,5 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public logout(){
-    AppSession.removeToken(AppSession.AUTH_TOKEN);
-    this.router.navigate(['/login']);
-  }
 
 }

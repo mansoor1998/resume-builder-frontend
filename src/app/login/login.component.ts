@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthDto, UserService } from 'src/shared/services/user.service';
 import { AppSession } from 'src/shared/app.session';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +35,6 @@ export class LoginComponent implements OnInit {
     // mark all as touched.
     this.loginForm?.markAllAsTouched();
     if(this.loginForm?.valid){
-      console.log('submisssion is possible');
       const authDto: AuthDto = this.loginForm.value;
 
       this.userService.login(authDto).subscribe((result: { jwt: string }) => {
@@ -41,9 +42,16 @@ export class LoginComponent implements OnInit {
         if(jwt != null){
           AppSession.setToken('auth-token', jwt, 1);
           // console.log('Application authentication token');
-          window.location.href = '/home';
+          window.location.href = '/';
         }
-      }, (err: Error) => {
+      }, (err: HttpErrorResponse) => {
+        if(err.status === 404){
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid Credentials',
+            text: 'invalid email or password'
+          })
+        }
         console.error(err);
       });
 

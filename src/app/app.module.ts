@@ -9,7 +9,7 @@ import { HeaderComponent } from './layout/header/header.component';
 import {MatIconModule} from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { TemplateComponent } from './template/template.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { CreateTemplateComponent } from './create-template/create-template.component';
 import { PreviewComponent } from './preview/preview.component';
 import { TemplateItemComponent } from './template-item/template-item.component';
@@ -23,8 +23,10 @@ import { PlatformLocation } from '@angular/common';
 import {HttpClient } from '@angular/common/http';
 import { AppConst } from 'src/shared/app.const';
 import { LoginComponent } from './login/login.component';
-import { UserService } from 'src/shared/services/user.service';
 import { CreateTemplateNewComponent } from './create-template-new/create-template-new.component';
+import {MatMenuModule} from '@angular/material/menu';
+// import { ToastrModule } from 'ngx-toastr';
+
 
 
 function appInitializerFactory(injector: Injector, platformLocation: PlatformLocation) {
@@ -35,8 +37,19 @@ function appInitializerFactory(injector: Injector, platformLocation: PlatformLoc
         .then((data: { remoteServiceBaseUrl: string, appBaseUrl: string }) => {
           AppConst.remoteServiceBaseUrl = data.remoteServiceBaseUrl;
           AppConst.appBaseUrl = data.appBaseUrl;
-
           res(true);
+          // const userService: UserService = injector.get(UserService);
+          // userService.isAuthorized().subscribe((result: boolean) => {
+          //   if(result){
+          //     res(true)
+          //   }
+          // }, (err: HttpErrorResponse) => {
+          //   if(err.status === 401){
+          //     AppSession.removeToken('auth-token');
+          //     console.log('the token is removed completly');
+          //   }
+          //   res(true);
+          // });
       }).catch(e => {
           rej(e);
       });
@@ -70,8 +83,9 @@ function appInitializerFactory(injector: Injector, platformLocation: PlatformLoc
     MatInputModule,
     MatButtonModule,
     MatExpansionModule,
-    MatChipsModule
-    // MatToolbarModule
+    MatChipsModule,
+    MatMenuModule,
+    // ToastrModule.forRoot()
   ],
   providers: [
     {

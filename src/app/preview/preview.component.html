@@ -1,3 +1,13 @@
-<div class="templates">
-    <app-template-item *ngFor="let item of templates" [templateItem]="item" (itemSelected)="itemSelected($event)"></app-template-item>
+<div class="templates" style="margin-top: 10px;">
+    <app-template-item [@fadeInAnimation] *ngFor="let item of templates" [templateItem]="item" (itemSelected)="itemSelected($event)">
+            <button mat-icon-button [matMenuTriggerFor]="menu" style="margin-top: 5px;">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="downloadFile(item)"> <mat-icon>download</mat-icon> Download</button>
+                <button mat-menu-item (click)="deleteResume(item)" > <mat-icon>delete_outline</mat-icon> Delete</button>
+            </mat-menu>
+
+            <!-- <img [src]="getResumeImage(item.htmlFile)" alt=""> -->
+    </app-template-item>
 </div>

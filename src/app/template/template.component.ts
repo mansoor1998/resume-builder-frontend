@@ -17,7 +17,9 @@ export class TemplateComponent implements OnInit {
     id: string,
     imagePath: string,
     fileName: string,
-    description: string
+    description: string,
+    htmlFile: string,
+    resumeImagePath: string
   }[] = [];
 
   constructor(private http: HttpClient, private router: Router, private resumeService: ResumeService) { }

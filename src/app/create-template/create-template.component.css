@@ -13,6 +13,16 @@ section {
     padding: var(--form-padding-vertical) var(--form-padding-horizontal);
 }
 
+.form .form-input {
+  display: flex; 
+  justify-content: flex-start; 
+  flex-wrap: wrap;
+}
+
+.description {
+  width: 400px;
+}
+
 
 #pdf-view {
     /* flex: 2; */
@@ -22,6 +32,7 @@ section {
     width: calc( 100% - var(--form-width) - calc(var(--form-padding-horizontal) * 4) ) ;
     background-color: rgb(122, 133, 153);
     height: 100%;
+    overflow: hidden;
     /* overflow-y: auto; */
 }
 
@@ -37,12 +48,13 @@ section {
     box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
     width: 21cm !important;
     height: 29.7cm !important; 
+    
     /* margin-bottom: 20px; */
 }
 
 .pdf {
     height: calc(100% - 50px) ;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 
@@ -62,11 +74,11 @@ section {
   color: rgba(0, 0, 0, 0.3);
 }
 
-.spinner-body{
+/* .spinner-body{
   position: absolute;
   top: 0;
   left: 50%; 
-}
+} */
 
 .spinner {
   animation: spin 1s infinite;
@@ -80,5 +92,28 @@ section {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  #pdf-view {
+    position: unset;
+    width: 100%;
+  }
+
+  .form {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form .form-input {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .description {
+    width: 100%;
   }
 }

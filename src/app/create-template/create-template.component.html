@@ -4,7 +4,7 @@
         <form [formGroup]="resumeForm" (ngSubmit)="formSubmit($event)">
 
             <div>
-                <div style="display: flex; justify-content: flex-start; flex-wrap: wrap;">
+                <div class="form-input">
 
                     <ng-container *ngIf="resumeForm.get('titleName')">
                         <div style="text-align: center;flex-basis: calc(50% - 5px); margin-bottom: 20px;">
@@ -62,17 +62,15 @@
 
                 </div>
     
-                <div style="display: flex;">
-    
+                <div>
                     <ng-container *ngIf="resumeForm.get('titleDescription')">
                         <div style="text-align:center; margin-bottom: 20px; flex-basis: calc(50% - 5px);">
-                            <mat-form-field appearance="fill" style="width: 400px;">
+                            <mat-form-field appearance="fill" class="description">
                                 <mat-label>Description</mat-label>
                                 <textarea  matInput formControlName="titleDescription" rows="5"></textarea>
                             </mat-form-field>
                         </div>
                     </ng-container>
-
                 </div>
 
 
@@ -282,26 +280,36 @@
                                 </ng-container>
                             </div>
                             <div style="margin: 10px; padding: 10px; border: 1px solid black; border-radius: 10px;">
-                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION , i)" mat-raised-button>Custom Section</button>
-                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION, i, 'Education')" mat-raised-button>Eudcation</button>
-                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION, i, 'Experience')" mat-raised-button>Experience</button>
-                                <button *ngIf="isRuleAvailable(formType.CHIP_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.CHIP_SECTION, i, 'Skills')" mat-raised-button>Skills</button>
-                                <button *ngIf="isRuleAvailable(formType.INTEREST_SECTION)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.INTEREST_SECTION, i, 'Interest')" mat-raised-button>Interest</button>
+                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 5px 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION , i)" mat-raised-button>Custom Section</button>
+                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 5px 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION, i, 'Education')" mat-raised-button>Eudcation</button>
+                                <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 5px 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION, i, 'Experience')" mat-raised-button>Experience</button>
+                                <button *ngIf="isRuleAvailable(formType.CHIP_SECTION)" style="margin: 5px 5px;" (click)="addColumnItem($event, formType.CHIP_SECTION, i, 'Skills')" mat-raised-button>Skills</button>
+                                <button *ngIf="isRuleAvailable(formType.INTEREST_SECTION)" style="margin: 5px 5px;" (click)="addColumnItem($event, formType.INTEREST_SECTION, i, 'Interest')" mat-raised-button>Interest</button>
                                 <!-- <button *ngIf="isRuleAvailable(formType.)" style="margin: 0 5px;" (click)="addColumnItem($event, formType.BULLET_LIST_SECTION, i)" mat-raised-button>Bullet list Section</button> -->
                             </div>
                         </mat-expansion-panel>
                       </mat-accordion>
                 </div>    
             </div>
-            <div style="display: flex; flex-direction: row; gap: 10px;">
-                <button mat-raised-button color="primary" name="generate-pdf">Generate Pdf</button>
-                <button mat-raised-button color="primary" name="save-progress">Save Progress</button>
+            <div style="display: flex; flex-direction: row; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
+                <button mat-raised-button color="primary" name="generate-pdf" [disabled]="(pdfLoading || !isProgressSaved)" >Generate Pdf  <mat-icon class="spinner" *ngIf="pdfLoading" >refresh</mat-icon> </button>
+                <button mat-raised-button color="primary" name="save-progress" [disabled]="(!isFormDirty() || progessLoading) && (isFormDirty() || !progessLoading)">Save Progress</button>
             </div>
         </form>
     </div>
     <div id="pdf-view">
-        <div style="display: flex; justify-content: right; margin: 0 10px 0 0;">
-            <mat-icon style="height: 1em; width: 1em; font-size: 3em; cursor: pointer;">cancel</mat-icon>
+        <div style="display: flex; justify-content: space-between; margin: 0 10px 0 0;">
+            <div *ngIf="loading; else elseBlock" style="padding-left: 30px; padding-top: 10px;">
+                <span>
+                    <mat-icon class="spinner">refresh</mat-icon> <span style="font-size: 20px; position: relative; bottom: 4px;">Loading...</span>
+                </span>
+            </div>
+            <ng-template #elseBlock>
+                <div></div>
+            </ng-template>
+            <div>
+                <mat-icon style="height: 1em; width: 1em; font-size: 3em; cursor: pointer; user-select: none;" (click)="exit()">cancel</mat-icon>
+            </div>
         </div>
         <!-- <div style="width: 100%; position: relative; height: auto;">
             <div style="height: auto;" class="spinner-body">
@@ -310,7 +318,7 @@
             </div>
         </div> -->
         <div class="pdf">
-            <div>
+            <div style="padding: 0 10px;">
                 <div class="page-A4">
                     <iframe #pdfView style="width: 100%; height: 100%; border: none" ></iframe>
                 </div>    

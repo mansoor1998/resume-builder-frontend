@@ -1,0 +1,4 @@
+.layover {
+    margin-top: var(--header-height);
+    overflow: hidden;
+}

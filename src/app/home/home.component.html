@@ -1,3 +1,23 @@
-this is the home and it works
+<div class="body">
+    <section>
+        <h2>RESUME BUILDER</h2>
+        <p>Use professional field-tested resume templates that follow the exact ‘resume rules’ employers look for. Easy to use and done within minutes - try now for free!</p>
+        <button [routerLink]="'/template'">Create My Resume</button>
 
-<button (click)="logout()" >logout</button>
+        <div class="intro-image">
+            <img src="../../assets/images/resume-img.png" alt="">
+        </div>
+    </section>
+
+    <section class="resume">
+
+        <h1>Select from multiple Resumes</h1>
+
+        <div style="margin-top: 35px;">
+            <app-template></app-template>    
+        </div>
+
+    </section>
+</div>
+
+<button  >logout</button>

@@ -4,16 +4,19 @@ export const fadeInAnimation =
     // trigger name for attaching this animation to an element using the [@triggerName] syntax
     trigger('fadeInAnimation', [
 
-        // route 'enter' transition
+        // the "in" style determines the "resting" state of the element when it is visible.
+        state('in', style({opacity: 1})),
+  
+        // fade in when created. this could also be written as transition('void => *')
         transition(':enter', [
-
-            // css styles at start of transition
-            style({ opacity: 0 }),
-
-            // animation and styles at end of transition
-            animate('.3s', style({ opacity: 1 }))
+          style({opacity: 0}),
+          animate(200)
         ]),
-    ]);
+  
+        // fade out when destroyed. this could also be written as transition('void => *')
+        transition(':leave',
+          animate(400, style({opacity: 0})))
+      ])
 
     export const slideInOutAnimation =
     // trigger name for attaching this animation to an element using the [@triggerName] syntax
@@ -102,5 +105,5 @@ export function fadeInOut() {
             query(':enter', animateChild(), { optional: true })
         ])
     ]);
-    }
+}
       
