@@ -9,6 +9,7 @@ import { PreviewComponent } from './preview/preview.component';
 import { TemplateComponent } from './template/template.component';
 import { AuthRouteGaurd } from 'src/shared/auth-route-gaurd';
 import { CreateTemplateNewComponent } from './create-template-new/create-template-new.component';
+import { RegisterComponent } from './register/register.component';
 
 const routes: Routes = [
   // {
@@ -46,14 +47,13 @@ const routes: Routes = [
     canActivate: [AuthRouteGaurd]
   },
   {
-    path: "template/create/new",
-    component: CreateTemplateNewComponent,
-    data: { animation: 'CreateTemplateNewComponent' },
+    path: 'login',
+    component: LoginComponent,
     canActivate: [AuthRouteGaurd]
   },
   {
-    path: 'login',
-    component: LoginComponent,
+    path: 'register',
+    component: RegisterComponent,
     canActivate: [AuthRouteGaurd]
   }
 ];

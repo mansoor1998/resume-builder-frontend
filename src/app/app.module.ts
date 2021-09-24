@@ -25,7 +25,13 @@ import { AppConst } from 'src/shared/app.const';
 import { LoginComponent } from './login/login.component';
 import { CreateTemplateNewComponent } from './create-template-new/create-template-new.component';
 import {MatMenuModule} from '@angular/material/menu';
+import { RegisterComponent } from './register/register.component';
 // import { ToastrModule } from 'ngx-toastr';
+import { SocialLoginModule, SocialAuthServiceConfig, SocialAuthService } from 'angularx-social-login';
+import {
+  GoogleLoginProvider,
+  FacebookLoginProvider
+} from 'angularx-social-login';
 
 
 
@@ -69,7 +75,8 @@ function appInitializerFactory(injector: Injector, platformLocation: PlatformLoc
     TemplateItemComponent,
     DashboardComponent,
     LoginComponent,
-    CreateTemplateNewComponent
+    CreateTemplateNewComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +100,22 @@ function appInitializerFactory(injector: Injector, platformLocation: PlatformLoc
       useFactory: appInitializerFactory,
       deps: [Injector, PlatformLocation],
       multi: true
-    }
+    },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '671706216760-l59h6blcqh2qpsderbe7mg4algkmrjc8.apps.googleusercontent.com'
+            )
+          }
+        ]
+      } as SocialAuthServiceConfig,
+    },
+    SocialAuthService
   ],
   bootstrap: [AppComponent]
 })
