@@ -53,7 +53,7 @@ export class LoginComponent extends GoogleAuth implements OnInit {
       this.userService.login(authDto).subscribe((result: { jwt: string }) => {
         const jwt = result?.jwt;
         if(jwt != null){
-          AppSession.setToken('auth-token', jwt, 1);
+          AppSession.setToken('auth-token', jwt, 0.5);
           // console.log('Application authentication token');
           window.location.href = '/';
         }

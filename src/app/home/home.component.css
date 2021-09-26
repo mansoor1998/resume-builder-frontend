@@ -47,6 +47,7 @@
 
 .body section:first-child .intro-image {
     overflow: hidden;
+    animation: intro-image-animate 1s forwards;
 }
 
 .body section:first-child .intro-image img {
@@ -69,6 +70,16 @@
 .resume h1 {
     font-family: BalsamiqSans, sans-serif;
     font-size: 3em;
+}
+
+
+@keyframes intro-image-animate {
+    from {
+        transform: translateY(200px);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 @media screen and (max-width: 800px) {

@@ -117,13 +117,44 @@
                         </div>
                     </ng-container>
                 </div>
+
+                <div>
+                    <ng-container *ngIf="resumeForm.get('skillLevel')">
+                        <div formArrayName="skillLevel" style="margin-bottom: 30px;">
+                            <h2 style="display: inline-block; margin-right: 10px;">SKILLS</h2>
+                            <button mat-icon-button color="primary" (click)="addSkillLevelItem(_skillLevel)">
+                                <mat-icon>add_circle_outline</mat-icon>
+                            </button>
+                            <ng-container *ngFor="let skill of _skillLevel?.controls; let i = index;" [formGroupName]="i">
+                                <div style="display: flex; margin: 5px 0;">
+                                    <mat-accordion style="flex: 1;">
+                                        <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                            {{ skill?.get('title')?.value ?  skill?.get('title')?.value : 'Untitled' }}
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-form-field  style="width: 300px;" class="example-full-width" appearance="fill">
+                                            <mat-label>Title</mat-label>
+                                            <input type="text" formControlName="title" matInput>
+                                        </mat-form-field>
+                                        <mat-slider style="display: inline-block; margin-left: 10px;" min="0" max="100" step="25" value="0" formControlName="percentage" ></mat-slider>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+                                    <button style="margin-left: 5px;" (click)="remove(_skillLevel, i)" mat-mini-fab color="warn">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>           
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
             </div>
 
             <div style="margin-bottom: 10px;" formArrayName="columns">
                 <div *ngFor="let column of _getColumns.controls; let i = index;" [formGroupName]="i">
-
                     <mat-accordion>
-                        <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel [expanded]="true">
                           <mat-expansion-panel-header>
                             <mat-panel-title>
                               Column {{i + 1}}
@@ -278,6 +309,7 @@
                                         </mat-form-field>
                                     </div>
                                 </ng-container>
+
                             </div>
                             <div style="margin: 10px; padding: 10px; border: 1px solid black; border-radius: 10px;">
                                 <button *ngIf="isRuleAvailable(formType.CUSTOM_SECTION)" style="margin: 5px 5px;" (click)="addColumnItem($event, formType.CUSTOM_SECTION , i)" mat-raised-button>Custom Section</button>

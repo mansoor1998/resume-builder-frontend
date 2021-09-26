@@ -9,7 +9,8 @@ const FORM_TYPES = {
   CUSTOM_SECTION: 'CustomSection',
   CHIP_SECTION: 'ChipSection',
   BULLET_LIST_SECTION: 'BULLET_LIST_SECTION',
-  INTEREST_SECTION: 'InterestSection'
+  INTEREST_SECTION: 'InterestSection',
+  SKILL_LEVEL_SECTION: 'SkillLevelSection'
 };
 
 
@@ -56,6 +57,7 @@ export class CreateTemplateComponent implements OnInit {
   constructor(private fb: FormBuilder, private http: HttpClient, private activatedRoute: ActivatedRoute, 
     private resumeService: ResumeService, private router: Router) {
     this.resumeForm = this.fb.group({
+      // skillLevel: this.fb.array([this.getSkillLevelItem()]),
       columns: this.fb.array([])
     });
   }
@@ -124,6 +126,10 @@ export class CreateTemplateComponent implements OnInit {
     return this.userResumeId;
   }
 
+  get _skillLevel() {
+    return this.resumeForm.get('skillLevel') as FormArray;
+  }
+
   setFormBody(rule: any, body: any = null){
 
     const {body: ruleBody, columns} = rule;
@@ -131,13 +137,16 @@ export class CreateTemplateComponent implements OnInit {
     console.log(body);
 
     for(let rule in ruleBody){
-      let control: FormControl | FormArray;
+      // debugger;
+      let control: FormControl | FormArray | FormGroup;
       if(ruleBody[rule]?.type === 'string') {
         control = new FormControl('', []);
       } else if (ruleBody[rule]?.type === 'number') {
         control = new FormControl(0, []);
       } else if(Array.isArray(ruleBody[rule]?.type)) {
-        control = new FormArray([]);
+        if(rule === "skillLevel"){
+          control = new FormArray([this.getSkillLevelItem()]);
+        } else control = new FormArray([]);
       }
 
       if(control!){
@@ -235,7 +244,7 @@ export class CreateTemplateComponent implements OnInit {
       formArray.push(section)
     }
 
-    console.log(formArray);
+    // console.log(formArray);
 
     return this.fb.group({
       type: FORM_TYPES.CUSTOM_SECTION,
@@ -263,6 +272,17 @@ export class CreateTemplateComponent implements OnInit {
     group.addControl(controlName, new FormArray([]));
 
     return group;
+  }
+
+  getSkillLevelItem(): FormGroup {
+    return this.fb.group({
+      title: '',
+      percentage: 0
+    });
+  }
+
+  addSkillLevelItem(item: FormArray) {
+    item.push(this.getSkillLevelItem());
   }
   
   customFormControl(key: string | string[], value: string | string[]){
@@ -487,8 +507,8 @@ export class CreateTemplateComponent implements OnInit {
     event.chipInput!.clear();
   }
 
-  remove(chips: AbstractControl | null, x: number): void {
-    (chips as FormArray).removeAt(x);
+  remove(itemArr: AbstractControl | null, x: number): void {
+    (itemArr as FormArray).removeAt(x);
   }
 
 }

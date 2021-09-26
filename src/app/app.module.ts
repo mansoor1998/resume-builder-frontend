@@ -26,8 +26,11 @@ import { LoginComponent } from './login/login.component';
 import { CreateTemplateNewComponent } from './create-template-new/create-template-new.component';
 import {MatMenuModule} from '@angular/material/menu';
 import { RegisterComponent } from './register/register.component';
+import {MatSliderModule} from '@angular/material/slider';
+
 // import { ToastrModule } from 'ngx-toastr';
 import { SocialLoginModule, SocialAuthServiceConfig, SocialAuthService } from 'angularx-social-login';
+
 import {
   GoogleLoginProvider,
   FacebookLoginProvider
@@ -92,6 +95,7 @@ function appInitializerFactory(injector: Injector, platformLocation: PlatformLoc
     MatExpansionModule,
     MatChipsModule,
     MatMenuModule,
+    MatSliderModule
     // ToastrModule.forRoot()
   ],
   providers: [
