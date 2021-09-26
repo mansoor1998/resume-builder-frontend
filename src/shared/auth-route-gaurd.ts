@@ -12,13 +12,18 @@ export class AuthRouteGaurd implements CanActivate, CanActivateChild {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
         const user = AppSession.getUserDetails();
         // if user does not exist than entery is forbidden.
-        if(state.url != '/login' && !user.id){
+        if((state.url != '/login' && state.url != '/register') && !user.id){
             this.router.navigate(['/login']);
             return false; 
         }
+        // if user does not exist the entry is forbidden
+        // if((state.url != '/register') && !user.id){
+        //     this.router.navigate(['/register']);
+        //     return false; 
+        // }
 
         // if user is loged in but accessing login page then redirect to home page.
-        if(state.url === '/login' && user.id){
+        if((state.url === '/login') && user.id){
             this.router.navigate(['/home']);
             return false;
         }

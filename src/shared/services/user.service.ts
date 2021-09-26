@@ -23,6 +23,13 @@ export class UserService {
         return this.http.post(this.REMOTE_BASE_URL + '/api/v1/user/login', user, { headers });
     }
 
+    public register(user: RegisterDto): Observable<JwtDto> | any {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        return this.http.post(this.REMOTE_BASE_URL + '/api/v1/user/register', user, { headers });
+    }
+
     public isAuthorized(): Observable<boolean> | any {
         return this.http.get(this.REMOTE_BASE_URL + '/api/v1/user/isAuthorized', {
             headers: new HttpHeaders({
@@ -30,6 +37,28 @@ export class UserService {
             })
         });
     }
+
+    public googleOAuth(body: any): Observable<any> | any {
+        return this.http.post(this.REMOTE_BASE_URL + '/api/v1/user/openauth/login', body);
+    }
+
+    public getUrl(): Observable<any> {
+        return this.http.get(this.REMOTE_BASE_URL + '/api/v1/user/openauth/google', {
+            responseType: 'text'
+        });
+    }
+
+
+}
+
+export class RegisterDto {
+    public email = '';
+    public password = '';
+}
+
+export class JwtDto {
+    public jwt: string = '';
+    public isActive: string = '';
 }
 
 export class AuthDto {
