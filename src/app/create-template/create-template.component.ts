@@ -158,6 +158,19 @@ export class CreateTemplateComponent implements OnInit {
                 name: new FormControl(item.name)
               }));
             }
+          } else if (rule === 'skillLevel') {
+            for(let i = 0; i <  body[rule].length; i++){
+              const item = body[rule][i];
+              if(i === 0){
+                (control as FormArray).at(i).get('title')?.setValue(item?.title);
+                (control as FormArray).at(i).get('percentage')?.setValue(item?.percentage);
+                continue;
+              }
+              const fg = this.getSkillLevelItem();
+              fg?.get('title')?.setValue(item?.title);
+              fg?.get('percentage')?.setValue(item?.percentage);
+              (control as FormArray).push(fg)
+            }
           }
         }
         this.resumeForm.addControl( rule, control );
