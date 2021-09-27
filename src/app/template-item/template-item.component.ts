@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
+import { AppConst } from 'src/shared/app.const';
 
 
 @Component({
@@ -19,6 +20,8 @@ export class TemplateItemComponent implements OnInit {
     htmlFile: string,
     resumeImagePath: string
   } | undefined;
+
+  public remoteServiceBaseUrl = AppConst.remoteServiceBaseUrl;
 
 
   @Output() public itemSelected : EventEmitter<any> = new EventEmitter();

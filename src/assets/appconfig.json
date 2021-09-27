@@ -1,4 +1,4 @@
 {
-    "remoteServiceBaseUrl": "http://localhost:3000",
+    "remoteServiceBaseUrl": "https://app-resume-build.herokuapp.com",
     "appBaseUrl": "http://localhost:4200"
 }

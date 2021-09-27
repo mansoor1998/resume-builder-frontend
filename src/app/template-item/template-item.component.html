@@ -4,7 +4,7 @@
             <img [src]="sanitize(item?.resumeImagePath)" alt="">
         </ng-container>
         <ng-template #elseBlock>
-            <img [src]="'http://localhost:3000/images/'+item?.imagePath" alt="">
+            <img [src]="remoteServiceBaseUrl+'/images/'+item?.imagePath" alt="ResumeImage">
         </ng-template>
         <!-- {{ item?.imagePath }} -->
         <!-- button -->
