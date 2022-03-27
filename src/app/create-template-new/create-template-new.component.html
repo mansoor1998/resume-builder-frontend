@@ -1,0 +1,12 @@
+{{ resumeForm.value | json }}
+
+<form [formGroup]="resumeForm" (ngSubmit)="submit()">
+    <div *ngFor="let item of fixedForm | keyvalue">
+        {{item.key}}
+        <ng-container *ngIf="$any(item.value).type == 'string'">
+            <input type="text" [formControlName]="$any(item.key)">
+        </ng-container>
+    </div>
+
+    <input type="submit">
+</form>

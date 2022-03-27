@@ -1,0 +1,39 @@
+<header class="header-fixed" #navbar>
+  <!-- <mat-icon>menu</mat-icon> -->
+  <span class="heading" [routerLink]="defaultRoute">
+    <img src="../../../assets/images/logo.png" alt="">
+  </span>
+  <div class="web-pages">
+    <ng-container *ngFor="let item of menuItems; let i = index">
+      <span [routerLink]="item.route" class="nav-item" [ngClass]='{ "selected": i === this.selectedIndex }' *ngIf="isAuthorized(item)" matRipple>{{ item.name }}</span>
+    </ng-container>
+    <span (click)="sideBarEnabled = !sideBarEnabled" class="menu-icon" matRipple><mat-icon>menu</mat-icon></span>
+
+    <span *ngIf="isLoggedIn()" class="custom-btn" id="logout">
+      <button (click)="logout()" matRipple>Logout</button>
+    </span>
+
+    <span *ngIf="!isLoggedIn()" class="custom-btn" id="login">
+      <button [routerLink]="'/login'" matRipple>Login</button>
+    </span>
+
+  </div>
+</header>
+
+<!-- full page side bar -->
+<div class="side-bar" [ngStyle]="{'left': sideBarEnabled ? '0' : '-100%'}">
+  <div class="icon">
+    <span (click)="sideBarEnabled = !sideBarEnabled">
+      <mat-icon>highlight_off</mat-icon>
+    </span>
+  </div>
+
+  <div class="side-bar-items">
+    <ng-container *ngFor="let item of menuItems; let i = index">
+      <span *ngIf="isAuthorized(item)" (click)="sidebarClick(item)" class="side-bar-item nav-item" [ngClass]='{ "selected": i === this.selectedIndex }' matRipple>{{ item.name }}</span>
+    </ng-container>
+    <span *ngIf="isLoggedIn()" (click)="logout()" class="side-bar-item nav-item" matRipple>Logout</span>
+    <span *ngIf="!isLoggedIn()" [routerLink]="'/login'" class="side-bar-item nav-item" matRipple>Login</span>
+  
+  </div>
+</div>

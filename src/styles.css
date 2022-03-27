@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root{
+    --header-height: 63px;
+}
+
+
+@font-face {
+    font-family: BalsamiqSans;
+    src: url('assets/fonts/BalsamiqSans-Regular.ttf');
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: BalsamiqSans, sans-serif; }
+
+
+
+.header-fixed {
+    position: fixed;
+    transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.header-hide{
+  top: calc(-1 * var(--header-height));  
+}

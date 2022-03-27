@@ -1,0 +1,11 @@
+<!-- application header -->
+
+
+<app-header></app-header>
+
+<div class="layover"></div>
+
+<!--  main body of the applicaiton -->
+<section [@fadeInOut]="prepareRoute(outlet)">
+  <router-outlet #outlet="outlet"></router-outlet>
+</section>

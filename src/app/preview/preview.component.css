@@ -1,0 +1,32 @@
+.templates{
+    display: flex;
+    width: 1400px;
+    flex-wrap: wrap;
+    margin: auto;
+    justify-content: space-around;
+    overflow: hidden;
+}
+
+
+.templates app-template-item {
+    /* flex-basis: calc(33.333% - 10px) */
+}
+
+
+@media screen and (max-width: 1440px) {
+    .templates {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 960px) {
+    .templates app-template-item {
+        /* flex-basis: calc(50% - 10px); */
+    }
+}
+
+@media only screen and (max-width: 770px) {
+    .templates app-template-item {
+        /* flex-basis: calc(100% - 10px); */
+    }
+}
